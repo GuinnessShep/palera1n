@@ -52,7 +52,7 @@ Options:
     --semi-tethered     When used with --tweaks, make the jailbreak semi-tethered instead of tethered
     --dfuhelper         A helper to help get A11 devices into DFU mode from recovery mode
     --skip-fakefs       Don't create the fakefs even if --semi-tethered is specified
-    --no-install        Skip murdering Tips app
+    --no-install        Skip murdering news app
     --no-baseband       Indicate that the device does not have a baseband
     --restorerootfs     Remove the jailbreak (Actually more than restore rootfs)
     --debug             Debug the script
@@ -246,7 +246,6 @@ _wait() {
         recovery_fix_auto_boot;
     fi
 }
-
 _dfuhelper() {
     local step_one;
     deviceid=$( [ -z "$deviceid" ] && _info normal ProductType || echo $deviceid )
@@ -623,10 +622,10 @@ if [ ! -f blobs/"$deviceid"-"$version".shsh2 ]; then
     fi
 
     if [ -z "$no_install" ]; then
-        tipsdir=$(remote_cmd "/usr/bin/find /mnt2/containers/Bundle/Application/ -name 'Tips.app'" 2> /dev/null)
+        newsdir=$(remote_cmd "/usr/bin/find /mnt2/containers/Bundle/Application/ -name 'news.app'" 2> /dev/null)
         sleep 1
-        if [ "$tipsdir" = "" ]; then
-            echo "[!] Tips is not installed. Once your device reboots, install Tips from the App Store and retry"
+        if [ "$newsdir" = "" ]; then
+            echo "[!] news is not installed. Once your device reboots, install news from the App Store and retry"
             remote_cmd "/sbin/reboot"
             sleep 1
             _kill_if_running iproxy
@@ -638,15 +637,15 @@ if [ ! -f blobs/"$deviceid"-"$version".shsh2 ]; then
         sleep 1
         remote_cmd "/bin/rm -rf /mnt1/private/var/root/temp/Info.plist /mnt1/private/var/root/temp/Base.lproj /mnt1/private/var/root/temp/PkgInfo"
         sleep 1
-        remote_cmd "/bin/cp -rf /mnt1/private/var/root/temp/* $tipsdir"
+        remote_cmd "/bin/cp -rf /mnt1/private/var/root/temp/* $newsdir"
         sleep 1
         remote_cmd "/bin/rm -rf /mnt1/private/var/root/temp"
         sleep 1
-        remote_cmd "/usr/sbin/chown 33 $tipsdir/Tips"
+        remote_cmd "/usr/sbin/chown 33 $newsdir/news"
         sleep 1
-        remote_cmd "/bin/chmod 755 $tipsdir/Tips $tipsdir/PogoHelper"
+        remote_cmd "/bin/chmod 755 $newsdir/news $newsdir/PogoHelper"
         sleep 1
-        remote_cmd "/usr/sbin/chown 0 $tipsdir/PogoHelper"
+        remote_cmd "/usr/sbin/chown 0 $newsdir/PogoHelper"
     fi
 
     #remote_cmd "/usr/sbin/nvram allow-root-hash-mismatch=1"
@@ -839,9 +838,10 @@ rm -rf work rdwork
 echo ""
 echo "Done!"
 echo "The device should now boot to iOS"
-echo "If this is your first time jailbreaking, open Tips app and then press Install"
-echo "Otherwise, open Tips app and press Do All in the Tools section"
+echo "If this is your first time jailbreaking, open news app and then press Install"
+echo "Otherwise, open news app and press Do All in the Tools section"
 echo "If you have any issues, please join the Discord server and ask for help: https://dsc.gg/palera1n"
 echo "Enjoy!"
 
 } | tee logs/"$(date +%T)"-"$(date +%F)"-"$(uname)"-"$(uname -r)".log
+                                                                       
